@@ -1,0 +1,196 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    background-color: orange;  
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.logo {
+    width: 70px;
+}
+
+.title h1 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.title p {
+    margin: 0;
+    font-size: 16px;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.menu a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+.menu a:hover {
+    color: blue;
+}
+
+.facebook {
+    background-color: #1877f2;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 5px;
+}
+
+
+.hero {
+    background-image: url("Smart-City.jpg");
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    padding-left: 80px;
+
+    color: gainsboro;
+}
+
+.hero-content {
+    max-width: 600px;
+}
+
+.hero h1 {
+    font-size: 60px;
+    margin-bottom: 20px;
+}
+
+.hero p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.btn {
+    background-color: #f58200;
+    padding: 15px 30px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+/* chenarul orange*/
+.regulament {
+    background-color: #f58200;
+    padding: 80px 120px;
+}
+
+.reg-container {
+    max-width: 1200px;
+    margin: auto;
+}
+
+.reg-left h2 {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.reg-left p {
+    max-width: 600px;
+    font-size: 18px;
+    margin-bottom: 20px;
+    line-height: 1.6;
+}
+
+/* linie alba*/
+.divider {
+    height: 1px;
+    background-color: white;
+    width: 60%;
+    margin: 80px auto;
+}
+
+/* calendar centrat */
+.calendar {
+    text-align: center;
+}
+
+.calendar h2 {
+    font-size: 26px;
+    margin-bottom: 40px;
+}
+
+.calendar p {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+
+/*footer*/
+
+.footer {
+    background-color: #081020;
+    padding: 30px 120px;
+}
+
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+}
+
+
+.footer-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    color: white;
+}
+
+.footer-right img {
+    height: 60px;
+
+}
+
+.uab-text {
+    font-size: 14px;
+    line-height: 1.3;
+}
+
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        padding: 10px;
+    }
+
+    .menu {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .hero h1 {
+        font-size: 20px;
+    }
+
+    .hero p {
+        font-size: 14px;
+    }
+
+    .footer {
+        text-align: center;
+    }
+}
