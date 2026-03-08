@@ -1,0 +1,25 @@
+{
+  "resources": [
+    {
+      "name": "Central Library",
+      "type": "study",
+      "location": "Building A",
+      "program": "08:00 - 20:00",
+      "tags": ["study", "books", "quiet"]
+    },
+    {
+      "name": "Campus Cafeteria",
+      "type": "food",
+      "location": "Building B",
+      "program": "08:00 - 18:00",
+      "tags": ["food", "lunch", "students"]
+    },
+    {
+      "name": "Student Event Hall",
+      "type": "events",
+      "location": "Building C",
+      "program": "10:00 - 22:00",
+      "tags": ["events", "meetings", "activities"]
+    }
+  ]
+}
