@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAB 3 - HTTP, Cookies și Sesiuni</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="index.html">Acasă</a>
+            <a href="preferences.html">Preferințe</a>
+            <a href="cookies-info.html">Info Cookies</a>
+            <a href="login.html">Autentificare</a>
+        </nav>
+
+        <div class="welcome">
+            <h1>Bun venit, <span id="username">Vizitator</span>!</h1>
+            <p>Această pagină demonstrează utilizarea cookies, localStorage și sessionStorage.</p>
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="label">Vizite</div>
+                    <div class="number" id="visitCount">1</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Temă Actuală</div>
+                    <div id="themeDisplay">Luminos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">Sesiune</div>
+                    <div id="sessionStatus">Inactiv</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>🍪 Cookie-uri Active</h2>
+        <div id="cookiesEmpty" class="alert alert-info">Nu există cookie-uri setate.</div>
+        <table id="cookiesTable" class="hidden">
+            <thead>
+                <tr>
+                    <th>Nume</th>
+                    <th>Valoare</th>
+                    <th>Lungime</th>
+                    <th>Acțiune</th>
+                </tr>
+            </thead>
+            <tbody id="cookiesBody">
+            </tbody>
+        </table>
+
+        <h2>💾 localStorage</h2>
+        <p><strong>JSON Formatat:</strong></p>
+        <div class="code" id="localStorageJson">
+            Gol
+        </div>
+        <div id="storageEmpty" class="alert alert-info">Nu există date în localStorage.</div>
+        <table id="storageTable" class="hidden">
+            <thead>
+                <tr>
+                    <th>Cheie</th>
+                    <th>Valoare</th>
+                    <th>Dimensiune</th>
+                    <th>Acțiune</th>
+                </tr>
+            </thead>
+            <tbody id="storageBody">
+            </tbody>
+        </table>
+
+        <h2>📦 sessionStorage</h2>
+        <p><strong>JSON Formatat:</strong></p>
+        <div class="code" id="sessionStorageJson">
+            Gol
+        </div>
+        <div id="sessionEmpty" class="alert alert-info">Nu există date în sessionStorage.</div>
+        <table id="sessionTable" class="hidden">
+            <thead>
+                <tr>
+                    <th>Cheie</th>
+                    <th>Valoare</th>
+                    <th>Dimensiune</th>
+                    <th>Acțiune</th>
+                </tr>
+            </thead>
+            <tbody id="sessionBody">
+            </tbody>
+        </table>
+
+        <h2>⚡ Acțiuni</h2>
+        <div>
+            <button id="refreshBtn" class="btn">🔄 Reîncarcă Datele</button>
+            <button id="deleteAllBtn" class="btn btn-danger">🗑️ Șterge Tot</button>
+        </div>
+
+        <h2>📊 Comparație între Mecanismele de Stocare</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Caracteristică</th>
+                    <th>Cookies</th>
+                    <th>localStorage</th>
+                    <th>sessionStorage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Capacitate</strong></td>
+                    <td>~4KB</td>
+                    <td>~5-10MB</td>
+                    <td>~5-10MB</td>
+                </tr>
+                <tr>
+                    <td><strong>Expirare</strong></td>
+                    <td>Setată explicit</td>
+                    <td>Permanent (până la ștergere)</td>
+                    <td>Închidere tab/browser</td>
+                </tr>
+                <tr>
+                    <td><strong>Trimis la server?</strong></td>
+                    <td>✅ Da (HTTP headers)</td>
+                    <td>❌ Nu</td>
+                    <td>❌ Nu</td>
+                </tr>
+                <tr>
+                    <td><strong>Accesibil din</strong></td>
+                    <td>JavaScript + Server</td>
+                    <td>JavaScript (same origin)</td>
+                    <td>JavaScript (same tab)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="js/cookies.js"></script>
+    <script src="js/storage.js"></script>
+    <script>
+        // Inițializare la încărcarea paginii
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            updateAllDisplays();
+        });
+
+        function initializeApp() {
+            // Inițializează vizitele
+            let visits = CookieManager.get('visits');
+            if (!visits) {
+                visits = 0;
+            }
+            visits = parseInt(visits) + 1;
+            CookieManager.set('visits', visits, 365);
+
+            // Obține username-ul din localStorage (dacă e salvat din preferences)
+            const rememberedUsername = StorageManager.getLocal('username');
+            if (rememberedUsername) {
+                CookieManager.set('username', rememberedUsername, 365);
+            }
+
+            // Aplicează tema salvată
+            const theme = CookieManager.get('theme') || 'light';
+            document.body.classList.add(theme);
+
+            // Actualizează afișajele
+            document.getElementById('username').textContent = CookieManager.get('username') || 'Vizitator';
+            document.getElementById('visitCount').textContent = visits;
+            document.getElementById('themeDisplay').textContent = theme === 'light' ? 'Luminos' : 'Întunecat';
+
+            // Verifica sesiunea
+            const session = StorageManager.getSession('session');
+            if (session) {
+                document.getElementById('sessionStatus').textContent = 'Conectat (' + session.username + ')';
+            }
+        }
+
+        function updateAllDisplays() {
+            updateCookiesDisplay();
+            updateStorageDisplay();
+            updateSessionDisplay();
+        }
+
+        function updateCookiesDisplay() {
+            const cookies = CookieManager.getAll();
+            const hasData = Object.keys(cookies).length > 0;
+            
+            document.getElementById('cookiesEmpty').classList.toggle('hidden', hasData);
+            document.getElementById('cookiesTable').classList.toggle('hidden', !hasData);
+
+            const tbody = document.getElementById('cookiesBody');
+            tbody.innerHTML = '';
+
+            for (const [name, value] of Object.entries(cookies)) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${name}</strong></td>
+                    <td>${value}</td>
+                    <td>${(name + value).length} bytes</td>
+                    <td>
+                        <button class="btn btn-danger btn-small" onclick="deleteCookie('${name}')">Șterge</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            }
+        }
+
+        function updateStorageDisplay() {
+            const localData = StorageManager.getAllLocal();
+            const hasData = Object.keys(localData).length > 0;
+
+            document.getElementById('storageEmpty').classList.toggle('hidden', hasData);
+            document.getElementById('storageTable').classList.toggle('hidden', !hasData);
+
+            // Afișează JSON formatat
+            document.getElementById('localStorageJson').textContent = JSON.stringify(localData, null, 2) || '{}';
+
+            const tbody = document.getElementById('storageBody');
+            tbody.innerHTML = '';
+
+            for (const [key, value] of Object.entries(localData)) {
+                const row = document.createElement('tr');
+                const displayValue = typeof value === 'object' ? JSON.stringify(value) : value;
+                row.innerHTML = `
+                    <td><strong>${key}</strong></td>
+                    <td>${displayValue}</td>
+                    <td>${JSON.stringify(value).length} bytes</td>
+                    <td>
+                        <button class="btn btn-danger btn-small" onclick="deleteLocalStorage('${key}')">Șterge</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            }
+        }
+
+        function updateSessionDisplay() {
+            const sessionData = StorageManager.getAllSession();
+            const hasData = Object.keys(sessionData).length > 0;
+
+            document.getElementById('sessionEmpty').classList.toggle('hidden', hasData);
+            document.getElementById('sessionTable').classList.toggle('hidden', !hasData);
+
+            // Afișează JSON formatat
+            document.getElementById('sessionStorageJson').textContent = JSON.stringify(sessionData, null, 2) || '{}';
+
+            const tbody = document.getElementById('sessionBody');
+            tbody.innerHTML = '';
+
+            for (const [key, value] of Object.entries(sessionData)) {
+                const row = document.createElement('tr');
+                const displayValue = typeof value === 'object' ? JSON.stringify(value) : value;
+                row.innerHTML = `
+                    <td><strong>${key}</strong></td>
+                    <td>${displayValue}</td>
+                    <td>${JSON.stringify(value).length} bytes</td>
+                    <td>
+                        <button class="btn btn-danger btn-small" onclick="deleteSessionStorage('${key}')">Șterge</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            }
+        }
+
+        function deleteCookie(name) {
+            if (confirm('Sigur doriți să ștergeți cookie-ul "' + name + '"?')) {
+                CookieManager.delete(name);
+                updateCookiesDisplay();
+            }
+        }
+
+        function deleteLocalStorage(key) {
+            if (confirm('Sigur doriți să ștergeți "' + key + '" din localStorage?')) {
+                StorageManager.removeLocal(key);
+                updateStorageDisplay();
+            }
+        }
+
+        function deleteSessionStorage(key) {
+            if (confirm('Sigur doriți să ștergeți "' + key + '" din sessionStorage?')) {
+                StorageManager.removeSession(key);
+                updateSessionDisplay();
+            }
+        }
+
+        // Event listeners
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            updateAllDisplays();
+            alert('Datele au fost reîncărcate!');
+        });
+
+        document.getElementById('deleteAllBtn').addEventListener('click', function() {
+            if (confirm('Sigur doriți să ștergeți TOATE cookie-urile și datele de stocare? Aceasta NU se poate anula!')) {
+                CookieManager.deleteAll();
+                StorageManager.clearLocal();
+                StorageManager.clearSession();
+                updateAllDisplays();
+                alert('Toate datele au fost șterse!');
+                location.reload();
+            }
+        });
+    </script>
+</body>
+</html>

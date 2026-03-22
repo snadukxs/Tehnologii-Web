@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Info Cookies - LAB 3</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="index.html">🏠 Acasă</a>
+            <a href="preferences.html">⚙️ Preferințe</a>
+            <a href="cookies-info.html">📋 Info Cookies</a>
+            <a href="login.html">🔐 Autentificare</a>
+        </nav>
+
+        <h1>📋 Informații Detaliate despre Stocare</h1>
+
+        <!-- Cookies Section -->
+        <h2>🍪 Cookie-uri</h2>
+
+        <h3>Valoarea Brută din document.cookie:</h3>
+        <div class="code" id="rawCookies">
+            (gol - niciun cookie setat)
+        </div>
+
+        <h3>Tabel Detaliat:</h3>
+        <div id="cookiesEmpty" class="alert alert-info">Nu există cookie-uri setate.</div>
+        <table id="cookiesTable" class="hidden">
+            <thead>
+                <tr>
+                    <th>Nume</th>
+                    <th>Valoare</th>
+                    <th>Lungime (bytes)</th>
+                    <th>Codificare</th>
+                    <th>Acțiuni</th>
+                </tr>
+            </thead>
+            <tbody id="cookiesBody">
+            </tbody>
+        </table>
+
+        <!-- localStorage Section -->
+        <h2>💾 localStorage</h2>
+
+        <h3>JSON Formatat:</h3>
+        <div class="code" id="localStorageJson">
+            {}
+        </div>
+
+        <h3>Tabel Detaliat:</h3>
+        <div id="localStorageEmpty" class="alert alert-info">Nu există date în localStorage.</div>
+        <table id="localStorageTable" class="hidden">
+            <thead>
+                <tr>
+                    <th>Cheie</th>
+                    <th>Valoare</th>
+                    <th>Tip</th>
+                    <th>Dimensiune (bytes)</th>
+                    <th>Acțiuni</th>
+                </tr>
+            </thead>
+            <tbody id="localStorageBody">
+            </tbody>
+        </table>
+
+        <!-- sessionStorage Section -->
+        <h2>📦 sessionStorage</h2>
+
+        <h3>JSON Formatat:</h3>
+        <div class="code" id="sessionStorageJson">
+            {}
+        </div>
+
+        <h3>Tabel Detaliat:</h3>
+        <div id="sessionStorageEmpty" class="alert alert-info">Nu există date în sessionStorage.</div>
+        <table id="sessionStorageTable" class="hidden">
+            <thead>
+                <tr>
+                    <th>Cheie</th>
+                    <th>Valoare</th>
+                    <th>Tip</th>
+                    <th>Dimensiune (bytes)</th>
+                    <th>Acțiuni</th>
+                </tr>
+            </thead>
+            <tbody id="sessionStorageBody">
+            </tbody>
+        </table>
+
+        <!-- Comparison Table -->
+        <h2>📊 Comparație Mecanisme de Stocare</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Caracteristică</th>
+                    <th>Cookies</th>
+                    <th>localStorage</th>
+                    <th>sessionStorage</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Capacitate</strong></td>
+                    <td>~4KB per cookie</td>
+                    <td>~5-10MB</td>
+                    <td>~5-10MB</td>
+                </tr>
+                <tr>
+                    <td><strong>Durata Expirării</strong></td>
+                    <td>Setată explicit<br/>(poate fi sesiune)</td>
+                    <td>Permanent<br/>(până la ștergere)</td>
+                    <td>End of session<br/>(când se închide tab)</td>
+                </tr>
+                <tr>
+                    <td><strong>Trimis la Server?</strong></td>
+                    <td>✅ Da (în HTTP headers)</td>
+                    <td>❌ Nu</td>
+                    <td>❌ Nu</td>
+                </tr>
+                <tr>
+                    <td><strong>Scop (Domain)</strong></td>
+                    <td>Intreg domeniu<br/>(cu path restriction)</td>
+                    <td>Same Origin Policy</td>
+                    <td>Same Origin Policy</td>
+                </tr>
+                <tr>
+                    <td><strong>Acces</strong></td>
+                    <td>JavaScript +<br/>Server-side</td>
+                    <td>JavaScript<br/>(same origin)</td>
+                    <td>JavaScript<br/>(same tab)</td>
+                </tr>
+                <tr>
+                    <td><strong>Sincronizare între Taburi</strong></td>
+                    <td>Sincronizate automat</td>
+                    <td>Sincronizate automat</td>
+                    <td>❌ Separate per tab</td>
+                </tr>
+                <tr>
+                    <td><strong>Securitate (HttpOnly)</strong></td>
+                    <td>✅ Poate fi HttpOnly</td>
+                    <td>❌ Vulnerable to XSS</td>
+                    <td>❌ Vulnerable to XSS</td>
+                </tr>
+                <tr>
+                    <td><strong>Structură Date</strong></td>
+                    <td>Text simplu</td>
+                    <td>JSON</td>
+                    <td>JSON</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Recommendations -->
+        <h2>💡 Recomandări de Utilizare</h2>
+        <div class="info-box">
+            <h3>Când să folosești Cookies:</h3>
+            <ul>
+                <li>Date de autentificare (JWT tokens)</li>
+                <li>Preferințe care trebuie trimise la server</li>
+                <li>Tracking și analytics</li>
+                <li>Session management</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <h3>Când să folosești localStorage:</h3>
+            <ul>
+                <li>Preferințe utilizator (temă, limba)</li>
+                <li>Cache de date locale</li>
+                <li>Stare aplicației persistentă</li>
+                <li>Date care nu trebuie trimise la server</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <h3>Când să folosești sessionStorage:</h3>
+            <ul>
+                <li>Date temporare pe sesiune</li>
+                <li>Coș de cumpărături (unu tab)</li>
+                <li>Stare temporară a aplicației</li>
+                <li>Cache care nu trebuie persistent</li>
+            </ul>
+        </div>
+
+        <!-- Actions -->
+        <h2>⚡ Acțiuni</h2>
+        <button id="refreshBtn" class="btn">🔄 Reîncarcă</button>
+        <button id="deleteAllBtn" class="btn btn-danger">🗑️ Șterge Tot</button>
+    </div>
+
+    <script src="js/cookies.js"></script>
+    <script src="js/storage.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            updateAllDisplays();
+            applyTheme();
+        });
+
+        function applyTheme() {
+            const theme = CookieManager.get('theme') || 'light';
+            document.body.classList.remove('light', 'dark');
+            document.body.classList.add(theme);
+        }
+
+        function updateAllDisplays() {
+            updateCookiesDisplay();
+            updateLocalStorageDisplay();
+            updateSessionStorageDisplay();
+        }
+
+        function updateCookiesDisplay() {
+            const rawCookie = document.cookie || '(gol)';
+            document.getElementById('rawCookies').textContent = rawCookie || '(gol)';
+
+            const cookies = CookieManager.getAll();
+            const hasData = Object.keys(cookies).length > 0;
+
+            document.getElementById('cookiesEmpty').classList.toggle('hidden', hasData);
+            document.getElementById('cookiesTable').classList.toggle('hidden', !hasData);
+
+            const tbody = document.getElementById('cookiesBody');
+            tbody.innerHTML = '';
+
+            for (const [name, value] of Object.entries(cookies)) {
+                const row = document.createElement('tr');
+                const size = (name + value).length;
+                row.innerHTML = `
+                    <td><code>${name}</code></td>
+                    <td><code>${value}</code></td>
+                    <td>${size}</td>
+                    <td>URL Encoded</td>
+                    <td>
+                        <button class="btn btn-danger btn-small" onclick="deleteCookie('${name}')">Șterge</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            }
+        }
+
+        function updateLocalStorageDisplay() {
+            const localData = StorageManager.getAllLocal();
+            const hasData = Object.keys(localData).length > 0;
+
+            document.getElementById('localStorageEmpty').classList.toggle('hidden', hasData);
+            document.getElementById('localStorageTable').classList.toggle('hidden', !hasData);
+
+            document.getElementById('localStorageJson').textContent = JSON.stringify(localData, null, 2) || '{}';
+
+            const tbody = document.getElementById('localStorageBody');
+            tbody.innerHTML = '';
+
+            for (const [key, value] of Object.entries(localData)) {
+                const row = document.createElement('tr');
+                const valueStr = typeof value === 'object' ? JSON.stringify(value) : String(value);
+                const size = JSON.stringify(value).length;
+                const type = typeof value;
+                row.innerHTML = `
+                    <td><code>${key}</code></td>
+                    <td><code>${valueStr}</code></td>
+                    <td>${type}</td>
+                    <td>${size}</td>
+                    <td>
+                        <button class="btn btn-danger btn-small" onclick="deleteFromLocal('${key}')">Șterge</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            }
+        }
+
+        function updateSessionStorageDisplay() {
+            const sessionData = StorageManager.getAllSession();
+            const hasData = Object.keys(sessionData).length > 0;
+
+            document.getElementById('sessionStorageEmpty').classList.toggle('hidden', hasData);
+            document.getElementById('sessionStorageTable').classList.toggle('hidden', !hasData);
+
+            document.getElementById('sessionStorageJson').textContent = JSON.stringify(sessionData, null, 2) || '{}';
+
+            const tbody = document.getElementById('sessionStorageBody');
+            tbody.innerHTML = '';
+
+            for (const [key, value] of Object.entries(sessionData)) {
+                const row = document.createElement('tr');
+                const valueStr = typeof value === 'object' ? JSON.stringify(value) : String(value);
+                const size = JSON.stringify(value).length;
+                const type = typeof value;
+                row.innerHTML = `
+                    <td><code>${key}</code></td>
+                    <td><code>${valueStr}</code></td>
+                    <td>${type}</td>
+                    <td>${size}</td>
+                    <td>
+                        <button class="btn btn-danger btn-small" onclick="deleteFromSession('${key}')">Șterge</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            }
+        }
+
+        function deleteCookie(name) {
+            if (confirm('Sigur doriți să ștergeți "' + name + '"?')) {
+                CookieManager.delete(name);
+                updateCookiesDisplay();
+            }
+        }
+
+        function deleteFromLocal(key) {
+            if (confirm('Sigur doriți să ștergeți "' + key + '" din localStorage?')) {
+                StorageManager.removeLocal(key);
+                updateLocalStorageDisplay();
+            }
+        }
+
+        function deleteFromSession(key) {
+            if (confirm('Sigur doriți să ștergeți "' + key + '" din sessionStorage?')) {
+                StorageManager.removeSession(key);
+                updateSessionStorageDisplay();
+            }
+        }
+
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            updateAllDisplays();
+            alert('Datele au fost reîncărcate!');
+        });
+
+        document.getElementById('deleteAllBtn').addEventListener('click', function() {
+            if (confirm('Sigur doriți să ștergeți TOTUL? Aceasta NU se poate anula!')) {
+                CookieManager.deleteAll();
+                StorageManager.clearLocal();
+                StorageManager.clearSession();
+                updateAllDisplays();
+                alert('Toate datele au fost șterse!');
+            }
+        });
+    </script>
+</body>
+</html>

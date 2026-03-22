@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coș de Cumpărături - LAB 3</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <a href="index.html">🏠 Acasă</a>
+            <a href="preferences.html">⚙️ Preferințe</a>
+            <a href="cookies-info.html">📋 Info Cookies</a>
+            <a href="dashboard.html">📊 Dashboard</a>
+            <button id="logoutBtn" class="btn btn-danger">🚪 Deconectare</button>
+        </nav>
+
+        <h1>🛒 Coș de Cumpărături</h1>
+        <p>Bine ați venit, <strong id="userName">utilizator</strong>!</p>
+
+        <h2>📦 Produse Disponibile</h2>
+        <form id="addToCartForm">
+            <div class="form-group">
+                <label for="productSelect">Selectați produs:</label>
+                <select id="productSelect" name="product" required>
+                    <option value="">-- Selectați un produs --</option>
+                    <option value="laptop">💻 Laptop - 2500 RON</option>
+                    <option value="telefon">📱 Telefon - 1200 RON</option>
+                    <option value="tableta">📱 Tabletă - 800 RON</option>
+                    <option value="casti">🎧 Căști - 150 RON</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="quantity">Cantitate:</label>
+                <input type="number" id="quantity" name="quantity" min="1" max="10" value="1" required>
+            </div>
+
+            <button type="submit" class="btn">➕ Adaugă în Coș</button>
+        </form>
+
+        <h2>🛁 Conținut Coș</h2>
+        <div id="emptyMessage" class="alert alert-info">
+            Coșul este gol. Adăugați produse pentru a continua!
+        </div>
+
+        <table id="cartTable" class="hidden">
+            <thead>
+                <tr>
+                    <th>Produs</th>
+                    <th>Preț Unitar</th>
+                    <th>Cantitate</th>
+                    <th>Subtotal</th>
+                    <th>Acțiune</th>
+                </tr>
+            </thead>
+            <tbody id="cartBody">
+            </tbody>
+        </table>
+
+        <div id="totalSection" class="hidden">
+            <div class="total">
+                TOTAL: <span id="totalPrice" class="price">0 RON</span>
+            </div>
+            <button id="checkoutBtn" class="btn">💳 Finalizare Cumpărătură</button>
+            <button id="emptyCartBtn" class="btn btn-danger">🗑️ Golește Coșul</button>
+        </div>
+
+        <h2>📊 Informații Stocare</h2>
+        <p><strong>Limba:</strong> Coșul se salvează în <code>sessionStorage</code> sub cheia <code>cart</code></p>
+        <p><strong>Format:</strong> Obiect cu produse și cantități: <code>{ "laptop": 2, "telefon": 1, ... }</code></p>
+        <p><strong>Persistență:</strong> Datele se pierd dacă se închide tab-ul!</p>
+
+        <h2>🛍️ Detalii Produse</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Produs</th>
+                    <th>Preț</th>
+                    <th>ID</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>💻 Laptop</td>
+                    <td><span class="price">2500 RON</span></td>
+                    <td><code>laptop</code></td>
+                </tr>
+                <tr>
+                    <td>📱 Telefon</td>
+                    <td><span class="price">1200 RON</span></td>
+                    <td><code>telefon</code></td>
+                </tr>
+                <tr>
+                    <td>📱 Tabletă</td>
+                    <td><span class="price">800 RON</span></td>
+                    <td><code>tableta</code></td>
+                </tr>
+                <tr>
+                    <td>🎧 Căști</td>
+                    <td><span class="price">150 RON</span></td>
+                    <td><code>casti</code></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>💡 Sfat</h2>
+        <div class="info-box">
+            <p><strong>Deschidere în tab nou:</strong> Dacă deschideți coșul în tab nou, acesta va fi gol!</p>
+            <p><strong>De ce?</strong> sessionStorage este specific fiecărui tab. Fiecare tab are propria stocare de sesiune.</p>
+            <p><strong>Testați:</strong> Adăugați produse în coș, apoi deschideți dashboard.html sau cart.html în tab nou. În noul tab, sesiunea și coșul vor fi goale!</p>
+        </div>
+    </div>
+
+    <script src="js/cookies.js"></script>
+    <script src="js/storage.js"></script>
+    <script>
+        const PRODUCTS = {
+            laptop: { name: 'Laptop', price: 2500 },
+            telefon: { name: 'Telefon', price: 1200 },
+            tableta: { name: 'Tabletă', price: 800 },
+            casti: { name: 'Căști', price: 150 }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSession();
+            applyTheme();
+            loadCart();
+            displayUserName();
+        });
+
+        function applyTheme() {
+            const theme = CookieManager.get('theme') || 'light';
+            document.body.classList.remove('light', 'dark');
+            document.body.classList.add(theme);
+        }
+
+        function checkSession() {
+            const session = StorageManager.getSession('session');
+            if (!session) {
+                alert('Nu sunteți conectat. Vă redirectez la pagina de conectare...');
+                window.location.href = 'login.html';
+            }
+        }
+
+        function displayUserName() {
+            const session = StorageManager.getSession('session');
+            if (session) {
+                document.getElementById('userName').textContent = session.username;
+            }
+        }
+
+        document.getElementById('addToCartForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const productId = document.getElementById('productSelect').value;
+            const quantity = parseInt(document.getElementById('quantity').value);
+
+            if (!productId) {
+                alert('Vă rugăm selectați un produs!');
+                return;
+            }
+
+            if (quantity < 1 || quantity > 10) {
+                alert('Cantitatea trebuie să fie între 1 și 10!');
+                return;
+            }
+
+            addToCart(productId, quantity);
+
+            // Reset formă
+            document.getElementById('productSelect').value = '';
+            document.getElementById('quantity').value = '1';
+        });
+
+        function addToCart(productId, quantity) {
+            let cart = StorageManager.getSession('cart') || {};
+
+            if (cart[productId]) {
+                cart[productId] += quantity;
+            } else {
+                cart[productId] = quantity;
+            }
+
+            StorageManager.setSession('cart', cart);
+            loadCart();
+
+            // Mesaj de confirmare
+            const productName = PRODUCTS[productId].name;
+            alert(quantity + ' × ' + productName + ' a fost adăugat în coș!');
+        }
+
+        function loadCart() {
+            const cart = StorageManager.getSession('cart') || {};
+            const itemCount = Object.keys(cart).length;
+
+            if (itemCount === 0) {
+                document.getElementById('emptyMessage').classList.remove('hidden');
+                document.getElementById('cartTable').classList.add('hidden');
+                document.getElementById('totalSection').classList.add('hidden');
+                return;
+            }
+
+            document.getElementById('emptyMessage').classList.add('hidden');
+            document.getElementById('cartTable').classList.remove('hidden');
+            document.getElementById('totalSection').classList.remove('hidden');
+
+            const tbody = document.getElementById('cartBody');
+            tbody.innerHTML = '';
+
+            let total = 0;
+
+            for (const [productId, quantity] of Object.entries(cart)) {
+                const product = PRODUCTS[productId];
+                if (product) {
+                    const subtotal = product.price * quantity;
+                    total += subtotal;
+
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${product.name}</td>
+                        <td class="price">${product.price} RON</td>
+                        <td>${quantity}</td>
+                        <td class="price">${subtotal} RON</td>
+                        <td>
+                            <button class="btn btn-danger btn-small" onclick="removeFromCart('${productId}')">Șterge</button>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                }
+            }
+
+            document.getElementById('totalPrice').textContent = total + ' RON';
+        }
+
+        function removeFromCart(productId) {
+            if (confirm('Sigur doriți să eliminați acest produs din coș?')) {
+                let cart = StorageManager.getSession('cart') || {};
+                delete cart[productId];
+                StorageManager.setSession('cart', cart);
+                loadCart();
+            }
+        }
+
+        document.getElementById('emptyCartBtn').addEventListener('click', function() {
+            if (confirm('Sigur doriți să golițți coșul? Aceasta NU se poate anula!')) {
+                StorageManager.removeSession('cart');
+                loadCart();
+                alert('Coșul a fost golit!');
+            }
+        });
+
+        document.getElementById('checkoutBtn').addEventListener('click', function() {
+            const cart = StorageManager.getSession('cart') || {};
+            const totalPrice = calculateTotal();
+
+            if (totalPrice > 0) {
+                alert('Mulțumim pentru cumpărătură!\nTotal: ' + totalPrice + ' RON\n\nAceasta este o demonstrație. In realitate, ați fi redirecționat la o pagină de plată.');
+            }
+        });
+
+        function calculateTotal() {
+            const cart = StorageManager.getSession('cart') || {};
+            let total = 0;
+
+            for (const [productId, quantity] of Object.entries(cart)) {
+                const product = PRODUCTS[productId];
+                if (product) {
+                    total += product.price * quantity;
+                }
+            }
+
+            return total;
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Sigur doriți să vă deconectați?')) {
+                StorageManager.removeSession('session');
+                StorageManager.removeSession('cart');
+                StorageManager.clearSession();
+                alert('Ați fost deconectat!');
+                window.location.href = 'login.html';
+            }
+        });
+    </script>
+</body>
+</html>
